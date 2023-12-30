@@ -24,6 +24,7 @@ async function loadRoutesDir(dirname, base) {
       ) {
         let modulePath = pathToFileURL(path.join(workdir, dirent.name));
         let module = await import(modulePath);
+        console.log("relativepath: ",relativePath, "module: ", module)
         router.set(relativePath.replaceAll(path.sep, '/'), { ...module });
       }
     }

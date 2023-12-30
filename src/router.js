@@ -12,21 +12,26 @@ async function loadRoutesDir(dirname, base) {
   const relativePath = path.join(base, dirname);
   const workdir = path.join(baseDir, relativePath);
 
-  const dir = await readdir(workdir, { withFileTypes: true });
-  for (const dirent of dir) {
-    if (dirent.isDirectory()) {
-      await loadRoutesDir(dirent.name, path.join(base, dirname));
-    } else if (
-      dirent.isFile() &&
-      path.extname(dirent.name) === '.js' &&
-      path.basename(dirent.name, '.js') === 'index'
-    ) {
-      let modulePath = pathToFileURL(path.join(workdir, dirent.name));
-      let module = await import(modulePath);
-      router.set(relativePath.replaceAll(path.sep, '/'), { ...module });
+  try {
+    const dir = await readdir(workdir, { withFileTypes: true });
+    for (const dirent of dir) {
+      if (dirent.isDirectory()) {
+        await loadRoutesDir(dirent.name, path.join(base, dirname));
+      } else if (
+        dirent.isFile() &&
+        path.extname(dirent.name) === '.js' &&
+        path.basename(dirent.name, '.js') === 'index'
+      ) {
+        let modulePath = pathToFileURL(path.join(workdir, dirent.name));
+        let module = await import(modulePath);
+        router.set(relativePath.replaceAll(path.sep, '/'), { ...module });
+      }
     }
+  } catch (error) {
+    console.error(`Error loading routes from ${relativePath}:`, error);
   }
 }
+
 
 await loadRoutesDir('', path.sep);
 

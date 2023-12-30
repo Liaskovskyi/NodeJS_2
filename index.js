@@ -1,8 +1,8 @@
 import * as http from 'node:http';
-import router from './router.js';
-import defaultHandler from './defaultHandler.js';
-import helpers from './helpers.js';
-import { safeJSON, parseXML} from './utils.js';
+import router from './src/router.js';
+import defaultHandler from './src/defaultHandler.js';
+import helpers from './src/helpers.js';
+import { safeJSON, parseXML} from './src/utils.js';
 
 const processedContentTypes = {
     'text/html': (text) =>  callback(null, text),

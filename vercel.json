@@ -20,7 +20,8 @@
       },
       {
         "src": "/(.*)",
-        "dest": "/index.js"
+        "dest": "/src/routes/index.js"
       }
     ]
   }
+  

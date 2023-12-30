@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = new Map();
-const baseDir = path.join(__dirname, '/routes');
+const baseDir = path.join(__dirname, '/Routes');
 
 async function loadRoutesDir(dirname, base) {
   const relativePath = path.join(base, dirname);

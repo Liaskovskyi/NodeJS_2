@@ -8,15 +8,17 @@ function safeJSON(data, fallback) {
     }
   }
 
-function parseXML(xmlString, callback) {
-    const parser = xml2js.Parser();
-    parser.parseString(xmlString, (err, result) => {
-      if (err) {
-        callback({}, null);
-      } else {
-        callback(null, result);
-      }
-    });
-  }
+  async function parseXML(xmlString) {
+    return new Promise((resolve) => {
+        const parser = xml2js.Parser();
+        parser.parseString(xmlString, (err, result) => {
+            if (err) {
+                resolve({});
+            } else {
+                resolve(result);
+            }
+        });
+    }); 
+}
   
   export { safeJSON, parseXML };

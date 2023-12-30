@@ -5,13 +5,12 @@ import helpers from './src/helpers.js';
 import { safeJSON, parseXML} from './src/utils.js';
 
 const processedContentTypes = {
-    'text/html': (text) =>  callback(null, text),
-    'text/plain': (text, callback) => callback(null, text),
-    'application/json': (json, callback) => callback(null, safeJSON(json, {})),
-    'application/x-www-form-urlencoded': (data, callback) =>
-      callback(null, Object.fromEntries(new URLSearchParams(data))),
-    'application/xml': (xml, callback) => parseXML(xml, callback),  
-  };
+  'text/html': (text) => text,
+  'text/plain':  (text) => text,
+  'application/json':  (json) => safeJSON(json, {}),
+  'application/x-www-form-urlencoded':  (data) => Object.fromEntries(new URLSearchParams(data)),
+  'application/xml': async (xml) => await parseXML(xml), 
+};
 
 const server = http.createServer(async (req, res) => {
     const url = new URL(req.url || '/', `https://${req.headers.host}`);
@@ -25,11 +24,8 @@ const server = http.createServer(async (req, res) => {
     if (req.headers['content-type']) {
       const contentType = req.headers['content-type'].split(';')[0];
       if (processedContentTypes[contentType]) {
-        processedContentTypes[contentType](rawRequest, (fallback, result) => {           
-            payload = result || fallback;
-          
-        });
-      }
+        payload = await processedContentTypes[contentType](rawRequest);
+    }
     }
     try {
         handler(req, Object.assign(res, helpers), url, payload, rawRequest);
